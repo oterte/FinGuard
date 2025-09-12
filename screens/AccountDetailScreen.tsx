@@ -37,27 +37,36 @@ export default function AccountDetailScreen() {
 
   // route 파라미터 화이트리스트 정제 (영숫자/대시/언더스코어만)
   const safeAccountId = String(accountId).replace(/[^a-zA-Z0-9-_]/g, '').slice(0, 64);
-
+  console.log(accountId)
+  console.log(safeAccountId)
   useEffect(() => {
     if (!safeAccountId) {
       Alert.alert('잘못된 접근', '계좌 식별자가 올바르지 않습니다.');
       setLoading(false);
       return;
     }
+
     const ENDPOINT = `${API_URL}/accounts`;
     (async () => {
       try {
         const res = await fetch(`${ENDPOINT}/${safeAccountId}`);
-        if (!res.ok) throw new Error(`서버 오류: ${res.status}`);
+
+        // 응답이 실패했을 때, JSON 본문을 읽어와서 상세 오류 메시지를 확인.
+        if (!res.ok) {
+          const errorData = await res.json();
+          console.error('API 응답 에러 데이터:', errorData); // <-- 서버가 보낸 상세 메시지를 콘솔에 출력
+          throw new Error(`서버 오류: ${res.status} - ${errorData?.detail || '상세 메시지 없음'}`);
+        }
+
         setData(await res.json());
       } catch (e: any) {
-        console.error(e);
+        console.error("Error", e);
         Alert.alert('계좌 조회 실패', e?.message ?? '알 수 없는 오류');
       } finally {
         setLoading(false);
       }
     })();
-  }, [safeAccountId]);
+  }, [safeAccountId]); // 의존성 배열도 safeAccountId로 변경
 
   const handleSend = () => {
     if (!data) { Alert.alert('계좌 정보를 불러오지 못했습니다.'); return; }

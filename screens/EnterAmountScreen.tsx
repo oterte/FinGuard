@@ -9,8 +9,8 @@ import { getCurrentLocation } from '../src/useCurrentLocation';
 import { API_URL } from '@env';
 import { sanitizeDigitsDash } from '../src/security/sanitize';
 
-import { getFcmToken } from '../src/secureStorage';
-import { notifyTransaction } from '../src/api/notifyTransaction';
+// import { getFcmToken } from '../src/secureStorage';
+// import { notifyTransaction } from '../src/api/notifyTransaction';
 
 type Nav = NativeStackNavigationProp<RootStackParamList, 'EnterAmount'>;
 type Rt  = RouteProp<RootStackParamList, 'EnterAmount'>;
@@ -58,13 +58,13 @@ export default function EnterAmountScreen() {
       return;
     }
    
-    const maybeMock =
-      (location as any).mocked === true ||
-      (location as any).isFromMockProvider === true;
-    if (maybeMock) {
-      Alert.alert('위치 실패', '모의 위치가 감지되어 송금을 진행할 수 없습니다.');
-      return;
-    }
+    // const maybeMock =
+    //   (location as any).mocked === true ||
+    //   (location as any).isFromMockProvider === true;
+    // if (maybeMock) {
+    //   Alert.alert('위치 실패', '모의 위치가 감지되어 송금을 진행할 수 없습니다.');
+    //   return;
+    // }
 
     setSending(true);
     try {
@@ -80,9 +80,11 @@ export default function EnterAmountScreen() {
         description: '출금',
         location: [location.latitude, location.longitude],
       };
-
+      console.log("payload", payload.counter_account)
+      console.log("payload", payload.my_account)
+      console.log("payload", payload.userSub)
      
-      const res = await fetch(`${API_URL}/banks/accounts`, {
+      const res = await fetch(`${API_URL}/transaction`, {
         method : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body   : JSON.stringify(payload),
@@ -95,17 +97,17 @@ export default function EnterAmountScreen() {
       if (!res.ok) throw new Error(`전송 실패: ${res.status}`);
 
      
-      const result = await res.json().catch(() => ({} as any));
-      const transactionId: string | undefined =
-        result?.id ?? result?.transactionId ?? result?.data?.id ?? result?.data?.transactionId;
-      if (!transactionId) throw new Error('거래 ID를 확인하지 못했습니다.');
+      // const result = await res.json().catch(() => ({} as any));
+      // // const transactionId: string | undefined =
+      // //   result?.id ?? result?.transactionId ?? result?.data?.id ?? result?.data?.transactionId;
+      // // if (!transactionId) throw new Error('거래 ID를 확인하지 못했습니다.');
 
      
-      const fcmToken = await getFcmToken();
-      if (!fcmToken) throw new Error('FCM 토큰을 확인하지 못했습니다.');
+      // const fcmToken = await getFcmToken();
+      // if (!fcmToken) throw new Error('FCM 토큰을 확인하지 못했습니다.');
 
       
-      await notifyTransaction({ transactionId, token: fcmToken, userId: userSub });
+      // await notifyTransaction({ transactionId, token: fcmToken, userId: userSub });
 
       
       Alert.alert('송금 완료', `${money.toLocaleString()}원 송금되었습니다.`);

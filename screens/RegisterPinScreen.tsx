@@ -62,6 +62,7 @@ export default function RegisterPinScreen({ route, navigation }: Props) {
     navigation.navigate('Login');
   } catch (err: any) {
     console.error('회원가입 실패:', err);
+    console.log(err)
     Alert.alert('회원가입 실패', err?.message ?? '문제가 발생했습니다.');
   }
 };

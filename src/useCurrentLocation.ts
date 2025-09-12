@@ -26,15 +26,15 @@ export async function getCurrentLocation(): Promise<Location> {
 
   /* 2) 현재 위치 수신 */
   return new Promise<Location>(async (resolve) => {
-    const isEmulator = await DeviceInfo.isEmulator();
+    // const isEmulator = await DeviceInfo.isEmulator();
 
-    if (isEmulator) {
-      Alert.alert(
-        '보안 경고',
-        '에뮬레이터에서는 위치 기반 기능을 사용할 수 없습니다.'
-      );
-      return resolve(null);
-    }
+    // if (isEmulator) {
+    //   Alert.alert(
+    //     '보안 경고',
+    //     '에뮬레이터에서는 위치 기반 기능을 사용할 수 없습니다.'
+    //   );
+    //   return resolve(null);
+    // }
 
     Geolocation.getCurrentPosition(
       (pos) => {

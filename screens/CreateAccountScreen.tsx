@@ -31,7 +31,7 @@ export default function CreateAccountScreen({ navigation }: Props) {
     const payload = { userSub, accountName: safeAcc.trim(), bankName: safeBank.trim() };
 
     try {
-      const res = await fetch(`${API_URL}/financial/createAccounts`, {
+      const res = await fetch(`${API_URL}/accounts/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

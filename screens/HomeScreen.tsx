@@ -63,7 +63,7 @@ export default function HomeScreen({ setIsLoggedIn }: Props) {
   /* ───── 계좌 조회 ───── */
   useFocusEffect(
     useCallback(() => {
-      const ENDPOINT = `${API_URL}/financial/accounts`;
+      const ENDPOINT = `${API_URL}/accounts/financial`;
 
 
       
@@ -71,6 +71,8 @@ export default function HomeScreen({ setIsLoggedIn }: Props) {
         try {
           const sub = await AsyncStorage.getItem('@userSub');
           const fcmToken = await getFcmToken();
+          console.log("sub",sub)
+          console.log("fcmToken",fcmToken)
 
           if (!sub) throw new Error('사용자 식별자 없음');
           if (!fcmToken) throw new Error('FCM 토큰 없음');
@@ -78,7 +80,7 @@ export default function HomeScreen({ setIsLoggedIn }: Props) {
           const res = await fetch(ENDPOINT, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ sub, fcmToken }),
+            body: JSON.stringify({ sub, fcmToken: [fcmToken] }),
           });
 
           if (!res.ok) throw new Error(`서버 오류: ${res.status}`);
